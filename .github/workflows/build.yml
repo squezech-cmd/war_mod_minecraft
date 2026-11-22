@@ -120,18 +120,44 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Accept EULA
+      - name: Start dedicated server in the background
+        shell: bash
         run: |
           mkdir -p run
           echo "eula=true" > run/eula.txt
-          printf 'online-mode=false\nmax-tick-time=-1\n' > run/server.properties
+          printf 'online-mode=false\nmax-tick-time=-1\nenable-rcon=true\nrcon.port=25575\nrcon.password=warmod\nspawn-protection=0\n' > run/server.properties
+          nohup ./gradlew runServer --no-daemon -Dorg.gradle.jvmargs=-Xmx4G > server.log 2>&1 &
+          echo $! > server.pid
 
-      - name: Start dedicated server (mod load + dimension smoke test)
+      - name: Wait for the server to finish starting
+        shell: bash
+        run: |
+          for i in $(seq 1 90); do
+            if grep -q "Done (" server.log 2>/dev/null; then
+              echo "server up after ~$((i * 5))s"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "server did not start"
+          tail -60 server.log
+          exit 1
+
+      - name: RCON runtime checks (dimension, entities, vehicles)
         shell: bash
         run: |
           set +e
-          timeout 600 ./gradlew runServer --no-daemon -Dorg.gradle.jvmargs=-Xmx5G > server.log 2>&1
-          echo "server exit: $?" 
+          python3 tools/smoke_rcon.py > rcon.md 2>&1
+          echo "rcon exit: $?" | tee -a rcon.md
+          cat rcon.md
+
+      - name: Stop the server
+        if: always()
+        shell: bash
+        run: |
+          pkill -f "net.minecraft.server" || true
+          pkill -f "GradleWrapperMain" || true
+          sleep 3
 
       - name: Publish smoke test result
         if: always()
@@ -142,13 +168,15 @@ jobs:
           OK=no
           grep -q "Done (" server.log && OK=yes
           DIM=no
-          grep -q "warmod:battlefield" server.log && DIM=yes
+          grep -q "Preparing start region for dimension warmod:battlefield" server.log && DIM=yes
           {
             echo "### Dedicated server smoke test"
             echo "started: $OK, battlefield dimension seen: $DIM"
             echo '```'
-            grep -nE "Done \(|Preparing start region|ERROR|Exception|Caused by|Failed to|crash|Mixin" server.log | head -80
+            grep -nE "Done \(|Preparing start region|ERROR|Exception|Caused by|Failed to|crash|WARN.*warmod" server.log | head -60
             echo '```'
+            echo "### RCON runtime checks"
+            cat rcon.md 2>/dev/null || echo "no rcon output"
           } > smoke.md
           NUM=$(gh issue list --state open --search "CI smoke test in:title" --json number -q '.[0].number')
           if [ -n "$NUM" ]; then gh issue comment "$NUM" --body-file smoke.md; else gh issue create --title "CI smoke test" --body-file smoke.md; fi
