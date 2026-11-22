@@ -82,26 +82,35 @@ def main():
     rcon.run(DIM + "locate biome warmod:ruined_city")
     rcon.run(DIM + "time query daytime")
 
-    # ---------------- wait for the test chunk to become loaded and entity-ticking
-    loaded = False
+    # ---------------- pick a loaded, entity-ticking spot (the dimension spawn area) as the test location
+    import re
+
+    spot = None
     for attempt in range(20):
         status = rcon.run("execute in warmod:battlefield run warmod status")
-        if "hasChunk(0,0)=true" in status and "entityTicking=true" in status:
-            loaded = True
-            print(f"test chunk ready after {attempt + 1} probes")
-            break
+        match = re.search(r"spawn=(-?\d+),(-?\d+),(-?\d+).*spawnTicking=(true|false).*spawnChunkLoaded=(true|false)",
+                          status)
+        if match:
+            x, y, z = (int(match.group(i)) for i in range(1, 4))
+            if match.group(4) == "true" and match.group(5) == "true":
+                spot = (x, y + 40, z)
+                print(f"test spot ready after {attempt + 1} probes: {spot}")
+                break
         time.sleep(1)
-    if not loaded:
+    if spot is None:
+        # fall back to the force-loaded origin so the remaining checks still produce information
+        spot = (8, 120, 8)
         rcon.failures += 1
-        print("FAILED: test chunk never became entity ticking")
+        print("FAILED: no entity-ticking spot found, falling back to (8, 120, 8)")
+    sx, sy, sz = spot
 
     # ---------------- control group: vanilla entity in the battlefield dimension
-    rcon.run(DIM + 'summon minecraft:armor_stand 2 120 0 {NoGravity:1b,Tags:["ctl"]}', "Summoned")
+    rcon.run(DIM + f'summon minecraft:armor_stand {sx} {sy} {sz} {{NoGravity:1b,Tags:["ctl"]}}', "Summoned")
     rcon.run(DIM + "data get entity @e[tag=ctl,limit=1] Pos", "Pos")
 
     # ---------------- every mod entity type
     for index, entity in enumerate(["soldier", "tank", "armored_car_1", "armored_car_2", "plane", "helicopter", "corpse"]):
-        rcon.run(DIM + f'summon warmod:{entity} {4 + index} 120 6 {{NoGravity:1b,Tags:["e_{entity}"]}}', "Summoned")
+        rcon.run(DIM + f'summon warmod:{entity} {sx + 2 + index} {sy} {sz + 2} {{NoGravity:1b,Tags:["e_{entity}"]}}', "Summoned")
     time.sleep(2)
     for entity in ["soldier", "tank", "armored_car_1", "armored_car_2", "plane", "helicopter", "corpse"]:
         rcon.run(DIM + f"data get entity @e[tag=e_{entity},limit=1] Pos", "Pos")
@@ -113,14 +122,14 @@ def main():
     rcon.run(DIM + "data get entity @e[tag=e_soldier,limit=1] Health", "Health")
 
     # ---------------- item registry
-    rcon.run(DIM + "setblock 0 120 8 minecraft:chest", "Changed")
+    rcon.run(DIM + f"setblock {sx + 6} {sy} {sz} minecraft:chest", "Changed")
     for slot, item in enumerate(["warmod:ak47", "warmod:barrett_m82", "warmod:ammo_556 32",
                                 "warmod:commander_radio", "warmod:ammo_crate", "warmod:tank_key"]):
-        rcon.run(f"{DIM}item replace block 0 120 8 container.{slot} with {item}", "Replaced")
+        rcon.run(f"{DIM}item replace block {sx + 6} {sy} {sz} container.{slot} with {item}", "Replaced")
 
     # ---------------- bot AI ticks for a few seconds and rides the tank
-    rcon.run(DIM + 'summon warmod:soldier 10 120 10 {Tags:["ai1"]}', "Summoned")
-    rcon.run(DIM + 'summon warmod:soldier 12 120 10 {Tags:["ai2"]}', "Summoned")
+    rcon.run(DIM + f'summon warmod:soldier {sx + 8} {sy} {sz + 8} {{Tags:["ai1"]}}', "Summoned")
+    rcon.run(DIM + f'summon warmod:soldier {sx + 10} {sy} {sz + 8} {{Tags:["ai2"]}}', "Summoned")
     time.sleep(8)
     rcon.run(DIM + "data get entity @e[tag=ai1,limit=1] Health", "Health")
     rcon.run(DIM + "ride @e[tag=ai1,limit=1] mount @e[tag=e_tank,limit=1]")

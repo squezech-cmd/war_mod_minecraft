@@ -81,7 +81,12 @@ public final class TeamCommands {
                 + " players=" + level.players().size()
                 + " hasChunk(0,0)=" + level.getChunkSource().hasChunk(chunk.x, chunk.z)
                 + " loadedChunks=" + level.getChunkSource().getLoadedChunksCount()
-                + " entityTicking=" + level.isPositionEntityTicking(probe)), false);
+                + " entityTicking=" + level.isPositionEntityTicking(probe)
+                + " spawn=" + level.getSharedSpawnPos().getX() + "," + level.getSharedSpawnPos().getY()
+                + "," + level.getSharedSpawnPos().getZ()
+                + " spawnTicking=" + level.isPositionEntityTicking(level.getSharedSpawnPos())
+                + " spawnChunkLoaded=" + level.getChunkSource().hasChunk(
+                        level.getSharedSpawnPos().getX() >> 4, level.getSharedSpawnPos().getZ() >> 4)), false);
         net.minecraft.world.entity.decoration.ArmorStand stand =
                 new net.minecraft.world.entity.decoration.ArmorStand(net.minecraft.world.entity.EntityType.ARMOR_STAND, level);
         stand.moveTo(8.5D, 120.0D, 8.5D, 0.0F, 0.0F);
