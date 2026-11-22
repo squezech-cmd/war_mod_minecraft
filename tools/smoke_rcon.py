@@ -82,6 +82,10 @@ def main():
     rcon.run(dim + "locate biome warmod:ruined_city")
     rcon.run(dim + "time query daytime")
 
+    # ---------------- mod-side diagnostics
+    rcon.run("warmod status")
+    rcon.run(dim + "warmod status")
+
     # ---------------- control group: vanilla entity in the same dimension
     rcon.run(dim + 'summon minecraft:armor_stand 2 120 0 {NoGravity:1b,Tags:["ctl"]}', "Summoned")
     rcon.run(dim + "data get entity @e[tag=ctl,limit=1] Pos")

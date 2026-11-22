@@ -60,7 +60,41 @@ public final class TeamCommands {
                 .then(Commands.literal("order")
                         .then(Commands.argument("order", StringArgumentType.word())
                                 .executes(context -> order(player(context),
-                                        StringArgumentType.getString(context, "order"))))));
+                                        StringArgumentType.getString(context, "order")))))
+                .then(Commands.literal("status")
+                        .requires(source -> source.hasPermission(2))
+                        .executes(context -> status(context))));
+    }
+
+    /** Diagnostics: is the battlefield level alive, loaded and ticking entities? */
+    private static int status(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getServer().getLevel(DimensionRegistration.BATTLEFIELD);
+        source.sendSuccess(() -> Component.literal("warmod status @ " + source.getLevel().dimension().location()), false);
+        if (level == null) {
+            source.sendSuccess(() -> Component.literal("battlefield level: MISSING"), false);
+            return 0;
+        }
+        net.minecraft.world.level.ChunkPos chunk = new net.minecraft.world.level.ChunkPos(8, 8);
+        BlockPos probe = new BlockPos(8, 120, 8);
+        source.sendSuccess(() -> Component.literal("battlefield level: " + level.dimension().location()
+                + " players=" + level.players().size()
+                + " hasChunk(0,0)=" + level.getChunkSource().hasChunk(chunk.x, chunk.z)
+                + " loadedChunks=" + level.getChunkSource().getLoadedChunksCount()
+                + " entityTicking=" + level.isPositionEntityTicking(probe)), false);
+        net.minecraft.world.entity.decoration.ArmorStand stand =
+                new net.minecraft.world.entity.decoration.ArmorStand(net.minecraft.world.entity.EntityType.ARMOR_STAND, level);
+        stand.moveTo(8.5D, 120.0D, 8.5D, 0.0F, 0.0F);
+        stand.setNoGravity(true);
+        stand.addTag("warmod_probe");
+        boolean added = level.addFreshEntity(stand);
+        source.sendSuccess(() -> Component.literal("probe addFreshEntity=" + added
+                + " removed=" + stand.isRemoved()
+                + " entitiesInArea=" + level.getEntitiesOfClass(Entity.class,
+                        new net.minecraft.world.phys.AABB(4.0D, 116.0D, 4.0D, 12.0D, 124.0D, 12.0D)).size()
+                + " totalEntities=" + level.getEntitiesOfClass(Entity.class,
+                        new net.minecraft.world.phys.AABB(-3.0E7D, -1.0E7D, -3.0E7D, 3.0E7D, 1.0E7D, 3.0E7D)).size()), false);
+        return 1;
     }
 
     @Nullable
