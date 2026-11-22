@@ -10,7 +10,7 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /** Client -> server: commander radio actions (spawn bots, orders, equipment). */
-public record RadioActionPacket(Action action, int value) {
+public record OrderPacket(Action action, int value) {
 
     public enum Action {
         SPAWN_BOTS,
@@ -19,16 +19,16 @@ public record RadioActionPacket(Action action, int value) {
         DISMISS
     }
 
-    public static void encode(RadioActionPacket msg, FriendlyByteBuf buf) {
+    public static void encode(OrderPacket msg, FriendlyByteBuf buf) {
         buf.writeEnum(msg.action);
         buf.writeVarInt(msg.value);
     }
 
-    public static RadioActionPacket decode(FriendlyByteBuf buf) {
-        return new RadioActionPacket(buf.readEnum(Action.class), buf.readVarInt());
+    public static OrderPacket decode(FriendlyByteBuf buf) {
+        return new OrderPacket(buf.readEnum(Action.class), buf.readVarInt());
     }
 
-    public static void handle(RadioActionPacket msg, Supplier<NetworkEvent.Context> ctxSup) {
+    public static void handle(OrderPacket msg, Supplier<NetworkEvent.Context> ctxSup) {
         NetworkEvent.Context ctx = ctxSup.get();
         ctx.enqueueWork(() -> {
             ServerPlayer player = ctx.getSender();

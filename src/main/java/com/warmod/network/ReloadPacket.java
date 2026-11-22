@@ -8,22 +8,22 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /** Client -> server: reload or cycle fire mode. */
-public record GunActionPacket(Action action) {
+public record ReloadPacket(Action action) {
 
     public enum Action {
         RELOAD,
         CYCLE_FIRE_MODE
     }
 
-    public static void encode(GunActionPacket msg, FriendlyByteBuf buf) {
+    public static void encode(ReloadPacket msg, FriendlyByteBuf buf) {
         buf.writeEnum(msg.action);
     }
 
-    public static GunActionPacket decode(FriendlyByteBuf buf) {
-        return new GunActionPacket(buf.readEnum(Action.class));
+    public static ReloadPacket decode(FriendlyByteBuf buf) {
+        return new ReloadPacket(buf.readEnum(Action.class));
     }
 
-    public static void handle(GunActionPacket msg, Supplier<NetworkEvent.Context> ctxSup) {
+    public static void handle(ReloadPacket msg, Supplier<NetworkEvent.Context> ctxSup) {
         NetworkEvent.Context ctx = ctxSup.get();
         ctx.enqueueWork(() -> {
             ServerPlayer player = ctx.getSender();

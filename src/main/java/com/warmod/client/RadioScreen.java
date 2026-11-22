@@ -3,7 +3,7 @@ package com.warmod.client;
 import com.warmod.item.GunDefinition;
 import com.warmod.item.GunRegistry;
 import com.warmod.network.NetworkHandler;
-import com.warmod.network.RadioActionPacket;
+import com.warmod.network.OrderPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -36,7 +36,7 @@ public class RadioScreen extends Screen {
         }).bounds(centerX - 110, y, 20, 20).build());
 
         this.spawnButton = Button.builder(spawnLabel(), b ->
-                NetworkHandler.sendToServer(new RadioActionPacket(RadioActionPacket.Action.SPAWN_BOTS, this.botCount))
+                NetworkHandler.sendToServer(new OrderPacket(OrderPacket.Action.SPAWN_BOTS, this.botCount))
         ).bounds(centerX - 86, y, 172, 20).build();
         this.addRenderableWidget(this.spawnButton);
 
@@ -59,12 +59,12 @@ public class RadioScreen extends Screen {
         this.equipButton = Button.builder(equipLabel(), b -> {
             this.gunIndex = (this.gunIndex + 1) % Math.max(1, this.pool.size());
             this.refreshLabels();
-            NetworkHandler.sendToServer(new RadioActionPacket(RadioActionPacket.Action.EQUIP, this.gunIndex));
+            NetworkHandler.sendToServer(new OrderPacket(OrderPacket.Action.EQUIP, this.gunIndex));
         }).bounds(centerX - 110, orderY + 50, 220, 20).build();
         this.addRenderableWidget(this.equipButton);
 
         this.addRenderableWidget(Button.builder(Component.translatable("warmod.radio.dismiss"),
-                b -> NetworkHandler.sendToServer(new RadioActionPacket(RadioActionPacket.Action.DISMISS, 0)))
+                b -> NetworkHandler.sendToServer(new OrderPacket(OrderPacket.Action.DISMISS, 0)))
                 .bounds(centerX - 110, orderY + 74, 220, 20).build());
 
         this.addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> this.onClose())
@@ -91,7 +91,7 @@ public class RadioScreen extends Screen {
     }
 
     private void order(int ordinal) {
-        NetworkHandler.sendToServer(new RadioActionPacket(RadioActionPacket.Action.ORDER, ordinal));
+        NetworkHandler.sendToServer(new OrderPacket(OrderPacket.Action.ORDER, ordinal));
     }
 
     @Override

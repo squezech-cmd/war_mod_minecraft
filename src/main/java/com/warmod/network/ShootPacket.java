@@ -8,17 +8,17 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 /** Client -> server: is the trigger held right now. */
-public record GunInputPacket(boolean trigger) {
+public record ShootPacket(boolean trigger) {
 
-    public static void encode(GunInputPacket msg, FriendlyByteBuf buf) {
+    public static void encode(ShootPacket msg, FriendlyByteBuf buf) {
         buf.writeBoolean(msg.trigger);
     }
 
-    public static GunInputPacket decode(FriendlyByteBuf buf) {
-        return new GunInputPacket(buf.readBoolean());
+    public static ShootPacket decode(FriendlyByteBuf buf) {
+        return new ShootPacket(buf.readBoolean());
     }
 
-    public static void handle(GunInputPacket msg, Supplier<NetworkEvent.Context> ctxSup) {
+    public static void handle(ShootPacket msg, Supplier<NetworkEvent.Context> ctxSup) {
         NetworkEvent.Context ctx = ctxSup.get();
         ctx.enqueueWork(() -> {
             ServerPlayer player = ctx.getSender();

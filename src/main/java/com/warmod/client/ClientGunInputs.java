@@ -2,7 +2,7 @@ package com.warmod.client;
 
 import com.warmod.entity.VehicleBase;
 import com.warmod.item.GunItem;
-import com.warmod.network.GunInputPacket;
+import com.warmod.network.ShootPacket;
 import com.warmod.network.NetworkHandler;
 import com.warmod.network.VehicleControlPacket;
 import com.warmod.util.ClientGunState;
@@ -35,18 +35,18 @@ public final class ClientGunInputs {
         if (minecraft.screen != null) {
             if (lastTrigger) {
                 lastTrigger = false;
-                NetworkHandler.sendToServer(new GunInputPacket(false));
+                NetworkHandler.sendToServer(new ShootPacket(false));
             }
             return;
         }
 
         while (KeyBindings.RELOAD.consumeClick()) {
-            NetworkHandler.sendToServer(new com.warmod.network.GunActionPacket(
-                    com.warmod.network.GunActionPacket.Action.RELOAD));
+            NetworkHandler.sendToServer(new com.warmod.network.ReloadPacket(
+                    com.warmod.network.ReloadPacket.Action.RELOAD));
         }
         while (KeyBindings.FIRE_MODE.consumeClick()) {
-            NetworkHandler.sendToServer(new com.warmod.network.GunActionPacket(
-                    com.warmod.network.GunActionPacket.Action.CYCLE_FIRE_MODE));
+            NetworkHandler.sendToServer(new com.warmod.network.ReloadPacket(
+                    com.warmod.network.ReloadPacket.Action.CYCLE_FIRE_MODE));
         }
         while (KeyBindings.VEHICLE_EXIT.consumeClick()) {
             if (minecraft.player.getVehicle() instanceof VehicleBase) {
@@ -59,7 +59,7 @@ public final class ClientGunInputs {
         boolean trigger = minecraft.options.keyAttack.isDown() && (holdingGun || riding);
 
         if (trigger != lastTrigger || (trigger && ++refresh % 8 == 0)) {
-            NetworkHandler.sendToServer(new GunInputPacket(trigger));
+            NetworkHandler.sendToServer(new ShootPacket(trigger));
             lastTrigger = trigger;
         }
 

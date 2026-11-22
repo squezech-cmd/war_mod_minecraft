@@ -23,16 +23,16 @@ public final class NetworkHandler {
     private NetworkHandler() {}
 
     public static void register() {
-        CHANNEL.messageBuilder(GunInputPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(GunInputPacket::encode).decoder(GunInputPacket::decode).consumerMainThread(GunInputPacket::handle).add();
-        CHANNEL.messageBuilder(GunActionPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(GunActionPacket::encode).decoder(GunActionPacket::decode).consumerMainThread(GunActionPacket::handle).add();
+        CHANNEL.messageBuilder(ShootPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ShootPacket::encode).decoder(ShootPacket::decode).consumerMainThread(ShootPacket::handle).add();
+        CHANNEL.messageBuilder(ReloadPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ReloadPacket::encode).decoder(ReloadPacket::decode).consumerMainThread(ReloadPacket::handle).add();
         CHANNEL.messageBuilder(VehicleControlPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(VehicleControlPacket::encode).decoder(VehicleControlPacket::decode).consumerMainThread(VehicleControlPacket::handle).add();
-        CHANNEL.messageBuilder(TeamActionPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(TeamActionPacket::encode).decoder(TeamActionPacket::decode).consumerMainThread(TeamActionPacket::handle).add();
-        CHANNEL.messageBuilder(RadioActionPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(RadioActionPacket::encode).decoder(RadioActionPacket::decode).consumerMainThread(RadioActionPacket::handle).add();
+        CHANNEL.messageBuilder(TeamPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(TeamPacket::encode).decoder(TeamPacket::decode).consumerMainThread(TeamPacket::handle).add();
+        CHANNEL.messageBuilder(OrderPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(OrderPacket::encode).decoder(OrderPacket::decode).consumerMainThread(OrderPacket::handle).add();
         CHANNEL.messageBuilder(RespawnPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder(RespawnPacket::encode).decoder(RespawnPacket::decode).consumerMainThread(RespawnPacket::handle).add();
 

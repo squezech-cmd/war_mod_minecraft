@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.warmod.entity.SoldierEntity;
 import com.warmod.item.VehicleType;
-import com.warmod.network.TeamActionPacket;
+import com.warmod.network.TeamPacket;
 import com.warmod.world.DimensionRegistration;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -203,7 +203,7 @@ public final class TeamCommands {
 
     // ------------------------------------------------------------------ packets
 
-    public static void handlePacket(ServerPlayer player, TeamActionPacket.Action action, String arg, String arg2) {
+    public static void handlePacket(ServerPlayer player, TeamPacket.Action action, String arg, String arg2) {
         switch (action) {
             case CREATE -> {
                 Faction faction = Faction.byKey(arg2.isEmpty() ? "alpha" : arg2);
