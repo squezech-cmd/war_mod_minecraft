@@ -43,6 +43,7 @@ cd war_mod_minecraft
 /warmod spawn vehicle tank         — заспавнить технику (armored_car_1, armored_car_2, plane, helicopter, tank)
 /warmod order follow               — приказ своим ботам (follow / hold / attack / retreat)
 /warmod leave                      — вернуться в обычный мир
+/warmod status                     — диагностика (уровень, чанки, сущности; только для операторов)
 ```
 
 Также работает предмет **«Рация командира»** (ПКМ — GUI: спавн солдата, приказ, смена оружия, число ботов).
