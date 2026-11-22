@@ -137,10 +137,25 @@ def crate_texture():
     return image
 
 
+# Hand/first-person placement of the GeckoLib weapon models. Vanilla still applies these transforms for
+# "builtin/entity" models, so the guns are scaled down and pulled into the lower right corner of the screen.
+GUN_DISPLAY = {
+    "thirdperson_righthand": {"rotation": [0, -90, 0], "translation": [0.0, 3.0, 1.0], "scale": [0.45, 0.45, 0.45]},
+    "thirdperson_lefthand": {"rotation": [0, 90, 0], "translation": [0.0, 3.0, 1.0], "scale": [0.45, 0.45, 0.45]},
+    "firstperson_righthand": {"rotation": [0, -90, 0], "translation": [1.0, 2.0, 1.0], "scale": [0.5, 0.5, 0.5]},
+    "firstperson_lefthand": {"rotation": [0, 90, 0], "translation": [1.0, 2.0, 1.0], "scale": [0.5, 0.5, 0.5]},
+    "ground": {"rotation": [0, 0, 0], "translation": [0.0, 2.0, 0.0], "scale": [0.5, 0.5, 0.5]},
+    "gui": {"rotation": [0, 0, 0], "translation": [0.0, 0.0, 0.0], "scale": [0.62, 0.62, 0.62]},
+    "fixed": {"rotation": [0, 0, 0], "translation": [0.0, 0.0, 0.0], "scale": [0.5, 0.5, 0.5]},
+}
+
+
 def gen_models():
     for gun_id, _, _, _, _ in WEAPONS:
         write(os.path.join(ASSETS, "models", "item", gun_id + ".json"),
-              {"parent": "builtin/entity", "textures": {"particle": "warmod:item/" + gun_id}})
+              {"parent": "builtin/entity",
+               "textures": {"particle": "warmod:item/" + gun_id},
+               "display": GUN_DISPLAY})
     for key, _, _ in AMMO:
         write(os.path.join(ASSETS, "models", "item", "ammo_" + key + ".json"),
               {"parent": "item/generated", "textures": {"layer0": "warmod:item/ammo_" + key}})

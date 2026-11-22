@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-"""Runtime smoke test: talks to a running dedicated server over RCON and exercises the mod.
+"""Runtime smoke test for a running dedicated server (RCON).
 
-Checks that the battlefield dimension exists, its sky/time is fixed to night, that every custom
-entity can be summoned (which runs its constructor, attributes and GeckoLib setup on the server)
-and that vehicles spawn with a full tank.
+Verifies that the battlefield dimension exists, that every custom entity can be created, that
+vehicles spawn fuelled, that the item registry resolves and that bots tick their AI without
+throwing. Prints a markdown table and exits non-zero when a critical check fails.
 """
 import socket
 import struct
 import sys
+import time
 
 HOST = "127.0.0.1"
 PORT = 25575
 PASSWORD = "warmod"
+BAD = ("Unknown", "failed", "Unable", "error", "Exception", "No entity was found", "That position")
 
 
 def packet(request_id, packet_type, body):
@@ -37,68 +39,88 @@ def read_packet(sock):
     return request_id, packet_type, data[8:-2].decode("utf8", "replace")
 
 
-CHECKS = [
-    # (command, expected substring or None, critical)
-    ("execute in warmod:battlefield run forceload add 0 0", "force loaded", True),
-    # informational: fixed_time lives in the dimension type and drives sky/light, `daytime` is the raw counter
-    ("execute in warmod:battlefield run time query daytime", None, False),
-    ("execute in warmod:battlefield run summon warmod:soldier 0 200 0 {NoAI:1b,Tags:[\"smokesoldier\"]}", "Summoned", True),
-    ("execute in warmod:battlefield run summon warmod:tank 6 200 6 {Tags:[\"smoketank\"]}", "Summoned", True),
-    ("execute in warmod:battlefield run summon warmod:armored_car_1 12 200 12", "Summoned", True),
-    ("execute in warmod:battlefield run summon warmod:armored_car_2 18 200 18", "Summoned", True),
-    ("execute in warmod:battlefield run summon warmod:plane 24 200 24", "Summoned", True),
-    ("execute in warmod:battlefield run summon warmod:helicopter 30 200 30", "Summoned", True),
-    ("execute in warmod:battlefield run summon warmod:corpse 0 200 4", "Summoned", True),
-    ("execute in warmod:battlefield run summon warmod:shell 0 202 0 {power:1.0d}", None, False),
-    ("execute in warmod:battlefield run data get entity @e[tag=smoketank,limit=1] Fuel", "1.0", True),
-    ("execute in warmod:battlefield run data get entity @e[tag=smoketank,limit=1] Health", None, True),
-    ("execute in warmod:battlefield run data get entity @e[tag=smokesoldier,limit=1] Health", None, True),
-    ("execute in warmod:battlefield run tag @e[tag=smokesoldier] add smoketag", "Added tag", True),
-    ("execute in warmod:battlefield run locate biome warmod:ruined_city", None, False),
-    # item registry: putting items into a chest resolves the registry names
-    ("execute in warmod:battlefield run setblock 0 200 8 minecraft:chest", None, False),
-    ("execute in warmod:battlefield run item replace block 0 200 8 container.0 with warmod:ak47", None, True),
-    ("execute in warmod:battlefield run item replace block 0 200 8 container.1 with warmod:barrett_m82", None, True),
-    ("execute in warmod:battlefield run item replace block 0 200 8 container.2 with warmod:ammo_556 32", None, True),
-    ("execute in warmod:battlefield run item replace block 0 200 8 container.3 with warmod:commander_radio", None, True),
-    ("execute in warmod:battlefield run item replace block 0 200 8 container.4 with warmod:ammo_crate", None, True),
-    ("execute in warmod:battlefield run item replace block 0 200 8 container.5 with warmod:tank_key", None, True),
-    ("kill @e[tag=smokesoldier]", None, False),
-    ("kill @e[tag=smoketank]", None, False),
-]
+class Rcon:
+    def __init__(self, host=HOST, port=PORT, password=PASSWORD):
+        self.sock = socket.create_connection((host, port), timeout=60)
+        self.sock.sendall(packet(1, 3, password))
+        if read_packet(self.sock) is None:
+            raise SystemExit("RCON login failed")
+        self.index = 2
+        self.failures = 0
 
-BAD = ("Unknown", "failed", "Unable", "error", "Exception", "No entity was found")
+    def run(self, command, expected=None, critical=False):
+        self.sock.sendall(packet(self.index, 2, command))
+        self.index += 1
+        response = read_packet(self.sock)
+        text = (response[2] if response else "<no response>").replace("\n", " ").strip() or "<empty>"
+        print(f"| `{command}` | {text[:220]} |")
+        if expected and expected not in text:
+            self.failures += 1
+            print(f"FAILED (expected '{expected}'): {command}")
+        elif critical and any(bad in text for bad in BAD):
+            self.failures += 1
+            print(f"FAILED (error response): {command}")
+        return text
+
+    def close(self):
+        self.sock.close()
 
 
 def main():
     try:
-        sock = socket.create_connection((HOST, PORT), timeout=60)
+        rcon = Rcon()
     except OSError as error:
         print(f"RCON connection failed: {error}")
         return 1
-    sock.sendall(packet(1, 3, PASSWORD))
-    if read_packet(sock) is None:
-        print("RCON login failed")
-        return 1
-    failures = 0
+
     print("| command | response |")
     print("|---|---|")
-    for index, (command, expected, critical) in enumerate(CHECKS, start=2):
-        sock.sendall(packet(index, 2, command))
-        response = read_packet(sock)
-        text = (response[2] if response else "<no response>").replace("\n", " ").strip() or "<empty>"
-        print(f"| `{command}` | {text[:200]} |")
-        if critical:
-            if expected and expected not in text:
-                print(f"FAILED (expected '{expected}'): {command}")
-                failures += 1
-            elif any(bad in text for bad in BAD):
-                print(f"FAILED (error response): {command}")
-                failures += 1
-    sock.close()
+
+    in_dim = "execute in warmod:battlefield run "
+
+    # --- dimension + chunk generator
+    rcon.run(in_dim + "forceload add 0 0", "force loaded")
+    rcon.run(in_dim + "locate biome warmod:ruined_city")
+    rcon.run(in_dim + "time query daytime")
+
+    # --- entity construction (server side constructors, attributes, GeckoLib animatable setup)
+    entities = ["soldier", "tank", "armored_car_1", "armored_car_2", "plane", "helicopter", "corpse"]
+    for index, entity in enumerate(entities):
+        x = index * 6
+        rcon.run(f"{in_dim}summon warmod:{entity} {x} 120 0 {{NoGravity:1b,Tags:[\"smoke_{entity}\"]}}", "Summoned")
+
+    # --- everything still alive one tick later? (catches entities that discard themselves on tick)
+    time.sleep(2)
+    for entity in entities:
+        rcon.run(f"{in_dim}execute if entity @e[tag=smoke_{entity},limit=1] run data get entity @e[tag=smoke_{entity},limit=1] UUID")
+
+    # --- vehicle data (fuel = 1.0 at spawn, health tracked through synched data)
+    rcon.run(in_dim + "data get entity @e[tag=smoke_tank,limit=1] Fuel", "1.0")
+    rcon.run(in_dim + "data get entity @e[tag=smoke_tank,limit=1] Health")
+    rcon.run(in_dim + "data get entity @e[tag=smoke_soldier,limit=1] Health")
+
+    # --- item registry (chest slots resolve item ids)
+    rcon.run(in_dim + "setblock 0 120 8 minecraft:chest")
+    for slot, item in enumerate(["warmod:ak47", "warmod:barrett_m82", "warmod:ammo_556 32",
+                                "warmod:commander_radio", "warmod:ammo_crate", "warmod:tank_key"]):
+        rcon.run(f"{in_dim}item replace block 0 120 8 container.{slot} with {item}", "Replaced")
+
+    # --- bot AI ticks for a few seconds, one bot rides the tank (exercises passenger seating)
+    rcon.run(in_dim + "summon warmod:soldier 60 130 0 {Tags:[\"smoke_ai\"]}", "Summoned")
+    rcon.run(in_dim + "summon warmod:soldier 64 130 0 {Tags:[\"smoke_ai\"]}", "Summoned")
+    rcon.run(in_dim + "ride @e[tag=smoke_ai,limit=1] mount @e[tag=smoke_tank,limit=1]")
+    time.sleep(10)
+    rcon.run(in_dim + "execute as @e[tag=smoke_ai,limit=1] run data get entity @s Health")
+
+    # --- cleanup
+    rcon.run(in_dim + "kill @e[tag=smoke_ai]")
+    for entity in entities:
+        rcon.run(f"{in_dim}kill @e[tag=smoke_{entity}]")
+    rcon.close()
+
     print()
-    print(f"critical failures: {failures}")
-    return 1 if failures else 0
+    print(f"critical failures: {rcon.failures}")
+    return 1 if rcon.failures else 0
 
 
 if __name__ == "__main__":

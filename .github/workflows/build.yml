@@ -181,3 +181,8 @@ jobs:
           NUM=$(gh issue list --state open --search "CI smoke test in:title" --json number -q '.[0].number')
           if [ -n "$NUM" ]; then gh issue comment "$NUM" --body-file smoke.md; else gh issue create --title "CI smoke test" --body-file smoke.md; fi
           if [ "$OK" != "yes" ]; then exit 1; fi
+          if grep -q "at com.warmod\." server.log; then
+            echo "mod stacktrace found in the server log"
+            grep -n -A20 "at com.warmod\." server.log | head -60
+            exit 1
+          fi
