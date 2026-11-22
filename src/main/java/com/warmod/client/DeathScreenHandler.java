@@ -15,8 +15,8 @@ public final class DeathScreenHandler {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.screen instanceof DeathScreen deathScreen && !(minecraft.screen instanceof DeathScreenWar)) {
-            minecraft.setScreen(new DeathScreenWar(deathScreen.getDeathCause(), deathScreen.shouldShowDeathScreen()));
+        if (minecraft.screen instanceof DeathScreen && !(minecraft.screen instanceof DeathScreenWar)) {
+            minecraft.setScreen(new DeathScreenWar());
         }
     }
 }

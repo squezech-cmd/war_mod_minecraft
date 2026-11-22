@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
  */
 public class BattlefieldSky extends DimensionSpecialEffects {
     private static final Vec3 FOG = new Vec3(0.102D, 0.102D, 0.125D); // ~0x1a1a20
-    private static final Vec3 CLOUD = new Vec3(0.07D, 0.07D, 0.09D);
 
     public BattlefieldSky() {
         super(Float.NaN, false, SkyType.NONE, false, true);
@@ -34,11 +33,6 @@ public class BattlefieldSky extends DimensionSpecialEffects {
     @Override
     public float[] getSunriseColor(float timeOfDay, float partialTicks) {
         return null;
-    }
-
-    @Override
-    public Vec3 getCloudColor(Vec3 cloudColor, float partialTicks) {
-        return CLOUD;
     }
 
     @Nullable

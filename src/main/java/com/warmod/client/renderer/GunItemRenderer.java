@@ -9,9 +9,4 @@ public class GunItemRenderer extends GeoItemRenderer<GunItem> {
     public GunItemRenderer(GunItem item) {
         super(new GunGeoModel(item.getDefinition().id()));
     }
-
-    @Override
-    public boolean shouldRenderOffScreen(GunItem animatable) {
-        return true;
-    }
 }

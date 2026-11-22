@@ -15,15 +15,11 @@ import net.minecraft.util.Mth;
  */
 public class DeathScreenWar extends Screen {
     private static final int COUNTDOWN_TICKS = 60;
-    private final Component deathCause;
-    private final boolean showScreen;
     private int countdown = COUNTDOWN_TICKS;
     private Button respawnButton;
 
-    public DeathScreenWar(Component deathCause, boolean showScreen) {
+    public DeathScreenWar() {
         super(Component.translatable("warmod.death.title"));
-        this.deathCause = deathCause;
-        this.showScreen = showScreen;
     }
 
     @Override
@@ -106,10 +102,6 @@ public class DeathScreenWar extends Screen {
                 (int) (centerX / counterScale - 110), lineY + 22, 0x9AA5B1, false);
         graphics.pose().popPose();
 
-        if (this.deathCause != null) {
-            graphics.drawCenteredString(this.font, this.deathCause, centerX,
-                    (int) (this.height * 0.62F), 0x777777);
-        }
         if (ClientTeamCache.inTeam) {
             String team = ClientTeamCache.teamName + "  " + ClientTeamCache.teamKills + " : " + ClientTeamCache.teamDeaths;
             graphics.drawCenteredString(this.font, team, centerX, (int) (this.height * 0.66F),
