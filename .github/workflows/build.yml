@@ -36,16 +36,29 @@ jobs:
           set -o pipefail
           ./gradlew build --no-daemon --stacktrace -Dorg.gradle.jvmargs=-Xmx4G 2>&1 | tee build.log && exit 0
 
-      - name: Report compile errors to the step summary
+      - name: Publish compile errors (issue comment)
         if: failure()
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           {
-            echo "## Build failed"
+            echo "### Build log excerpt"
             echo '```'
-            grep -E "error:|warning:|What went wrong|Execution failed|Caused by|> Task .*FAILED|FAILURE:" build.log | head -60
+            grep -nE "error:|What went wrong|Execution failed|Caused by:|FAILURE:" build.log | head -80
             echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+            echo "<details><summary>tail</summary>"
+            echo '```'
+            tail -120 build.log
+            echo '```'
+            echo "</details>"
+          } > err.md
+          NUM=$(gh issue list --state open --search "CI build log in:title" --json number -q '.[0].number')
+          if [ -n "$NUM" ]; then
+            gh issue comment "$NUM" --body-file err.md
+          else
+            gh issue create --title "CI build log" --body-file err.md
+          fi
 
       - name: Upload mod jar
         if: success()
