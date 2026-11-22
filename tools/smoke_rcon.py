@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Runtime smoke test for a running dedicated server (RCON).
 
-Verifies that the battlefield dimension exists, that every custom entity can be created, that
-vehicles spawn fuelled, that the item registry resolves and that bots tick their AI without
-throwing. Prints a markdown table and exits non-zero when a critical check fails.
+Verifies the battlefield dimension, entity construction, vehicle fuel, item registry and bot AI.
+A vanilla armor stand is used as a control to separate level/selector problems from mod problems.
+Prints a markdown table and exits non-zero when a critical check fails.
 """
 import socket
 import struct
@@ -75,47 +75,62 @@ def main():
 
     print("| command | response |")
     print("|---|---|")
+    dim = "execute in warmod:battlefield run "
 
-    in_dim = "execute in warmod:battlefield run "
+    # ---------------- level / chunk generator / biome
+    rcon.run(dim + "forceload add 0 0", "force loaded")
+    rcon.run(dim + "locate biome warmod:ruined_city")
+    rcon.run(dim + "time query daytime")
 
-    # --- dimension + chunk generator
-    rcon.run(in_dim + "forceload add 0 0", "force loaded")
-    rcon.run(in_dim + "locate biome warmod:ruined_city")
-    rcon.run(in_dim + "time query daytime")
+    # ---------------- control group: vanilla entity in the same dimension
+    rcon.run(dim + 'summon minecraft:armor_stand 2 120 0 {NoGravity:1b,Tags:["ctl"]}', "Summoned")
+    rcon.run(dim + "data get entity @e[tag=ctl,limit=1] Pos")
+    # ---------------- mod entities, queried immediately (same tick batch)
+    rcon.run(dim + 'summon warmod:tank 6 120 0 {NoGravity:1b,Tags:["t1"]}', "Summoned")
+    rcon.run(dim + "data get entity @e[tag=t1,limit=1] Pos")
+    rcon.run(dim + 'summon warmod:soldier 10 120 0 {NoAI:1b,NoGravity:1b,Tags:["s1"]}', "Summoned")
+    rcon.run(dim + "data get entity @e[tag=s1,limit=1] Pos")
 
-    # --- entity construction (server side constructors, attributes, GeckoLib animatable setup)
-    entities = ["soldier", "tank", "armored_car_1", "armored_car_2", "plane", "helicopter", "corpse"]
-    for index, entity in enumerate(entities):
-        x = index * 6
-        rcon.run(f"{in_dim}summon warmod:{entity} {x} 120 0 {{NoGravity:1b,Tags:[\"smoke_{entity}\"]}}", "Summoned")
+    time.sleep(3)
+    rcon.run(dim + "data get entity @e[tag=ctl,limit=1] Pos")
+    rcon.run(dim + "data get entity @e[tag=t1,limit=1] Pos")
+    rcon.run(dim + "data get entity @e[tag=s1,limit=1] Pos")
+    rcon.run(dim + 'execute if entity @e[tag=ctl] run say CONTROL_ALIVE')
+    rcon.run(dim + 'execute if entity @e[tag=t1] run say TANK_ALIVE')
+    time.sleep(3)
+    rcon.run(dim + 'execute if entity @e[tag=ctl] run say CONTROL_ALIVE_LATE')
+    rcon.run(dim + 'execute if entity @e[tag=t1] run say TANK_ALIVE_LATE')
 
-    # --- everything still alive one tick later? (catches entities that discard themselves on tick)
+    # ---------------- fuel / health when the vehicle is still there
+    rcon.run(dim + "data get entity @e[tag=t1,limit=1] Fuel", "1.0")
+    rcon.run(dim + "data get entity @e[tag=t1,limit=1] Health")
+    rcon.run(dim + "data get entity @e[tag=s1,limit=1] Health")
+
+    # ---------------- every other entity type
+    for index, entity in enumerate(["armored_car_1", "armored_car_2", "plane", "helicopter", "corpse"]):
+        rcon.run(dim + f'summon warmod:{entity} {20 + index * 6} 120 0 {{NoGravity:1b,Tags:["e_{entity}"]}}', "Summoned")
     time.sleep(2)
-    for entity in entities:
-        rcon.run(f"{in_dim}execute if entity @e[tag=smoke_{entity},limit=1] run data get entity @e[tag=smoke_{entity},limit=1] UUID")
+    for entity in ["armored_car_1", "armored_car_2", "plane", "helicopter", "corpse"]:
+        rcon.run(dim + f"data get entity @e[tag=e_{entity},limit=1] Pos")
+    rcon.run(dim + "data get entity @e[tag=e_plane,limit=1] Fuel", "1.0")
 
-    # --- vehicle data (fuel = 1.0 at spawn, health tracked through synched data)
-    rcon.run(in_dim + "data get entity @e[tag=smoke_tank,limit=1] Fuel", "1.0")
-    rcon.run(in_dim + "data get entity @e[tag=smoke_tank,limit=1] Health")
-    rcon.run(in_dim + "data get entity @e[tag=smoke_soldier,limit=1] Health")
-
-    # --- item registry (chest slots resolve item ids)
-    rcon.run(in_dim + "setblock 0 120 8 minecraft:chest")
+    # ---------------- item registry
+    rcon.run(dim + "setblock 0 120 8 minecraft:chest")
     for slot, item in enumerate(["warmod:ak47", "warmod:barrett_m82", "warmod:ammo_556 32",
                                 "warmod:commander_radio", "warmod:ammo_crate", "warmod:tank_key"]):
-        rcon.run(f"{in_dim}item replace block 0 120 8 container.{slot} with {item}", "Replaced")
+        rcon.run(f"{dim}item replace block 0 120 8 container.{slot} with {item}", "Replaced")
 
-    # --- bot AI ticks for a few seconds, one bot rides the tank (exercises passenger seating)
-    rcon.run(in_dim + "summon warmod:soldier 60 130 0 {Tags:[\"smoke_ai\"]}", "Summoned")
-    rcon.run(in_dim + "summon warmod:soldier 64 130 0 {Tags:[\"smoke_ai\"]}", "Summoned")
-    rcon.run(in_dim + "ride @e[tag=smoke_ai,limit=1] mount @e[tag=smoke_tank,limit=1]")
+    # ---------------- bot AI for a few seconds
+    rcon.run(dim + 'summon warmod:soldier 60 130 0 {Tags:["ai1"]}', "Summoned")
+    rcon.run(dim + 'summon warmod:soldier 64 130 0 {Tags:["ai2"]}', "Summoned")
     time.sleep(10)
-    rcon.run(in_dim + "execute as @e[tag=smoke_ai,limit=1] run data get entity @s Health")
+    rcon.run(dim + "data get entity @e[tag=ai1,limit=1] Health")
+    rcon.run(dim + "ride @e[tag=ai1,limit=1] mount @e[tag=t1,limit=1]")
 
-    # --- cleanup
-    rcon.run(in_dim + "kill @e[tag=smoke_ai]")
-    for entity in entities:
-        rcon.run(f"{in_dim}kill @e[tag=smoke_{entity}]")
+    # ---------------- cleanup
+    rcon.run(dim + "kill @e[tag=ai1]")
+    rcon.run(dim + "kill @e[tag=ai2]")
+    rcon.run(dim + "kill @e[tag=ctl]")
     rcon.close()
 
     print()
