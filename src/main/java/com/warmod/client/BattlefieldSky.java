@@ -2,10 +2,6 @@ package com.warmod.client;
 
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.ISkyRenderHandler;
-import net.minecraftforge.client.IWeatherRenderHandler;
-
-import javax.annotation.Nullable;
 
 /**
  * Dark, foggy sky of the battlefield: no sun, no stars, heavy dark fog (0x1a1a20).
@@ -26,17 +22,5 @@ public class BattlefieldSky extends DimensionSpecialEffects {
     @Override
     public boolean isFoggyAt(int x, int z) {
         return true;
-    }
-
-    @Nullable
-    @Override
-    public ISkyRenderHandler getSkyRenderHandler() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public IWeatherRenderHandler getWeatherRenderHandler() {
-        return null;
     }
 }

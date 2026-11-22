@@ -41,7 +41,13 @@ jobs:
         shell: bash
         run: |
           set +e
-          JAR=$(find "$HOME/.gradle/caches" -name "*mapped*official*.jar" 2>/dev/null | head -1)
+          JAR=""
+          for candidate in $(find "$HOME/.gradle/caches" -name "*.jar" ! -name "*sources*" 2>/dev/null); do
+            if unzip -l "$candidate" 2>/dev/null | grep -q "net/minecraft/client/renderer/DimensionSpecialEffects.class"; then
+              JAR="$candidate"
+              break
+            fi
+          done
           echo "jar: $JAR" > probe.log
           if [ -n "$JAR" ] && [ -f tools/probe.txt ]; then
             while IFS='|' read -r cls pattern; do
