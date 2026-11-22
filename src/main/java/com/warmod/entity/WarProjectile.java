@@ -32,7 +32,6 @@ public abstract class WarProjectile extends Entity {
 
     protected WarProjectile(EntityType<? extends WarProjectile> type, Level level) {
         super(type, level);
-        this.noPhysics(false);
     }
 
     @Override

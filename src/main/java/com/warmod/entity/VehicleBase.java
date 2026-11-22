@@ -296,7 +296,7 @@ public abstract class VehicleBase extends Entity implements GeoEntity {
 
     @Override
     @Nullable
-    public Entity getControllingPassenger() {
+    public net.minecraft.world.entity.LivingEntity getControllingPassenger() {
         return this.getDriver();
     }
 
@@ -339,7 +339,7 @@ public abstract class VehicleBase extends Entity implements GeoEntity {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         this.setHealth(tag.getFloat("Health"));
-        this.setFuel(tag.hasKey("Fuel") ? tag.getFloat("Fuel") : 1.0F);
+        this.setFuel(tag.contains("Fuel") ? tag.getFloat("Fuel") : 1.0F);
         this.setTurretYaw(tag.getFloat("TurretYaw"));
     }
 

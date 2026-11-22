@@ -6,7 +6,6 @@ import com.warmod.item.GunItem;
 import com.warmod.util.ClientGunState;
 import com.warmod.world.DimensionRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -21,7 +20,7 @@ public final class ClientSkyAndFov {
 
     @SubscribeEvent
     public static void onFogColor(ViewportEvent.ComputeFogColor event) {
-        if (!WarConfig.darkSky() || !inBattlefield() || event.getType() == FogType.POWDER_SNOW) {
+        if (!WarConfig.darkSky() || !inBattlefield()) {
             return;
         }
         event.setRed(0.102F);

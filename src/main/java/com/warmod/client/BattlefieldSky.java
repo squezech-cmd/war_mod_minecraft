@@ -1,11 +1,9 @@
 package com.warmod.client;
 
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ISkyRenderHandler;
 import net.minecraftforge.client.IWeatherRenderHandler;
-import net.minecraft.world.level.dimension.DimensionSpecialEffects;
 
 import javax.annotation.Nullable;
 
@@ -28,11 +26,6 @@ public class BattlefieldSky extends DimensionSpecialEffects {
     @Override
     public boolean isFoggyAt(int x, int z) {
         return true;
-    }
-
-    @Override
-    public float[] getSunriseColor(float timeOfDay, float partialTicks) {
-        return null;
     }
 
     @Nullable

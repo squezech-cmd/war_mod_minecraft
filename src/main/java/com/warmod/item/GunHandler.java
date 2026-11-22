@@ -54,6 +54,11 @@ public final class GunHandler {
 
     // ------------------------------------------------------------------ input
 
+    public static boolean isTriggerHeld(net.minecraft.world.entity.LivingEntity entity) {
+        State state = STATES.get(entity.getUUID());
+        return state != null && state.trigger;
+    }
+
     public static void setTrigger(ServerPlayer player, boolean trigger) {
         state(player).trigger = trigger;
     }

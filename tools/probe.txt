@@ -1,0 +1,20 @@
+net.minecraft.client.renderer.DimensionSpecialEffects|class |public |protected 
+net.minecraft.client.renderer.DimensionSpecialEffects$SkyType|public |class 
+net.minecraft.world.entity.Entity|getControllingPassenger|positionRider|shouldRiderSit|noPhysics|hurt\(|interact\(|canAddPassenger|MoveFunction|isPickable|setPos\(|ejectPassengers
+net.minecraft.world.level.Level$ExplosionInteraction|class |public 
+net.minecraft.client.resources.sounds.SimpleSoundInstance|public 
+net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator|public |protected 
+net.minecraft.world.level.levelgen.NoiseGeneratorSettings|CODEC|class 
+net.minecraftforge.client.event.ViewportEvent$ComputeFogColor|public 
+net.minecraftforge.client.event.ViewportEvent$RenderFog|public 
+net.minecraftforge.client.event.ViewportEvent$ComputeFov|FOV|public 
+net.minecraftforge.client.event.ViewportEvent$ComputeCameraAngles|public 
+net.minecraft.client.gui.GuiGraphics|blit|pose|drawString|fill
+net.minecraft.world.item.Item|getUseDuration|canAttackBlock|initializeClient|use\(|releaseUsing|isBarVisible|getBarWidth|getBarColor
+net.minecraftforge.client.event.RenderGuiEvent$Post|public 
+net.minecraft.client.renderer.entity.EntityRenderer|entityRenderDispatcher|cameraOrientation|getTextureLocation|shadowRadius
+net.minecraft.world.level.chunk.ChunkGenerator|buildSurface|getBaseHeight
+net.minecraft.client.renderer.entity.EntityRenderDispatcher|cameraOrientation
+net.minecraft.client.resources.sounds.TickableSoundInstance|public 
+net.minecraft.world.entity.projectile.ProjectileUtil|getEntityHitResult
+net.minecraft.world.entity.LivingEntity|getKillCredit|startUsingItem|getEyeHeight
