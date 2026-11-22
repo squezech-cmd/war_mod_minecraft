@@ -146,10 +146,8 @@ jobs:
       - name: RCON runtime checks (dimension, entities, vehicles)
         shell: bash
         run: |
-          set +e
-          python3 tools/smoke_rcon.py > rcon.md 2>&1
-          echo "rcon exit: $?" | tee -a rcon.md
-          cat rcon.md
+          set -o pipefail
+          python3 tools/smoke_rcon.py | tee rcon.md
 
       - name: Stop the server
         if: always()
