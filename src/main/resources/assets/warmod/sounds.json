@@ -1,0 +1,317 @@
+{
+  "ambient_drone": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "warmod:ambient_drone",
+        "stream": false
+      }
+    ]
+  },
+  "ambient_explosion": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "warmod:ambient_explosion",
+        "stream": false
+      }
+    ]
+  },
+  "ambient_far_gunfire": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "warmod:ambient_far_gunfire",
+        "stream": false
+      }
+    ]
+  },
+  "ambient_jet_pass": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "warmod:ambient_jet_pass",
+        "stream": false
+      }
+    ]
+  },
+  "ambient_siren": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "warmod:ambient_siren",
+        "stream": false
+      }
+    ]
+  },
+  "bullet_impact": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:bullet_impact",
+        "stream": false
+      }
+    ]
+  },
+  "deploy": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:deploy",
+        "stream": false
+      }
+    ]
+  },
+  "dry_fire": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:dry_fire",
+        "stream": false
+      }
+    ]
+  },
+  "engine_car": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "warmod:engine_car",
+        "stream": false
+      }
+    ]
+  },
+  "engine_heli": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "warmod:engine_heli",
+        "stream": false
+      }
+    ]
+  },
+  "engine_plane": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "warmod:engine_plane",
+        "stream": false
+      }
+    ]
+  },
+  "engine_tank": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "warmod:engine_tank",
+        "stream": false
+      }
+    ]
+  },
+  "explosion_large": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:explosion_large",
+        "stream": false
+      }
+    ]
+  },
+  "explosion_small": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:explosion_small",
+        "stream": false
+      }
+    ]
+  },
+  "grenade_bounce": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:grenade_bounce",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_50cal": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_50cal",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_launcher": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_launcher",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_mg": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_mg",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_pistol": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_pistol",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_rifle": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_rifle",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_shotgun": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_shotgun",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_smg": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_smg",
+        "stream": false
+      }
+    ]
+  },
+  "gunshot_sniper": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:gunshot_sniper",
+        "stream": false
+      }
+    ]
+  },
+  "headshot": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:headshot",
+        "stream": false
+      }
+    ]
+  },
+  "melee_hit": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:melee_hit",
+        "stream": false
+      }
+    ]
+  },
+  "melee_swing": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:melee_swing",
+        "stream": false
+      }
+    ]
+  },
+  "music_battlefield": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "warmod:music_battlefield",
+        "stream": true
+      }
+    ]
+  },
+  "reload_heavy": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:reload_heavy",
+        "stream": false
+      }
+    ]
+  },
+  "reload_pistol": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:reload_pistol",
+        "stream": false
+      }
+    ]
+  },
+  "reload_rifle": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:reload_rifle",
+        "stream": false
+      }
+    ]
+  },
+  "tank_cannon": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:tank_cannon",
+        "stream": false
+      }
+    ]
+  },
+  "throw": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:throw",
+        "stream": false
+      }
+    ]
+  },
+  "ui_click": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "warmod:ui_click",
+        "stream": false
+      }
+    ]
+  },
+  "vehicle_destroy": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:vehicle_destroy",
+        "stream": false
+      }
+    ]
+  },
+  "vehicle_hit": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "warmod:vehicle_hit",
+        "stream": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "warmod:battlefield",
+  "generator": {
+    "type": "warmod:battlefield",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "warmod:ruined_city"
+    },
+    "settings": "minecraft:overworld"
+  }
+}

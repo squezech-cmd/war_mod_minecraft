@@ -1,0 +1,75 @@
+{
+ "format_version": "1.8.0",
+ "animations": {
+  "idle": {
+   "loop": true,
+   "animation_length": 3.0,
+   "bones": {
+    "body": {
+     "position": {
+      "0": [
+       0,
+       0,
+       0
+      ],
+      "1.5": [
+       0,
+       0.15,
+       0
+      ],
+      "3.0": [
+       0,
+       0,
+       0
+      ]
+     }
+    }
+   }
+  },
+  "move": {
+   "loop": true,
+   "animation_length": 0.4,
+   "bones": {
+    "propeller": {
+     "rotation": {
+      "0": [
+       0,
+       0,
+       0
+      ],
+      "0.4": [
+       0,
+       0,
+       360
+      ]
+     }
+    }
+   }
+  },
+  "fire": {
+   "loop": false,
+   "animation_length": 0.4,
+   "bones": {
+    "body": {
+     "position": {
+      "0": [
+       0,
+       0,
+       0
+      ],
+      "0.08": [
+       0,
+       0,
+       1.2
+      ],
+      "0.4": [
+       0,
+       0,
+       0
+      ]
+     }
+    }
+   }
+  }
+ }
+}

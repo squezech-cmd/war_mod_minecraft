@@ -1,0 +1,167 @@
+{
+ "format_version": "1.12.0",
+ "minecraft:geometry": [
+  {
+   "description": {
+    "identifier": "geometry.warmod.spas_12",
+    "texture_width": 128,
+    "texture_height": 128,
+    "visible_bounds_width": 4,
+    "visible_bounds_height": 3,
+    "visible_bounds_offset": [
+     0,
+     0.5,
+     0
+    ]
+   },
+   "bones": [
+    {
+     "name": "root",
+     "pivot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "name": "body",
+     "parent": "root",
+     "pivot": [
+      0,
+      0,
+      0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -1.2,
+        0.0,
+        -6.32
+       ],
+       "size": [
+        2.4,
+        3.2,
+        12.64
+       ],
+       "uv": [
+        1,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "name": "barrel",
+     "parent": "body",
+     "pivot": [
+      0,
+      1.4,
+      -6.3180000000000005
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -0.8,
+        1.44,
+        -15.04
+       ],
+       "size": [
+        1.6,
+        1.6,
+        9.72
+       ],
+       "uv": [
+        32,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "name": "magazine",
+     "parent": "body",
+     "pivot": [
+      0,
+      -1.2,
+      0
+     ],
+     "cubes": []
+    },
+    {
+     "name": "grip",
+     "parent": "body",
+     "pivot": [
+      0,
+      -1.4,
+      4.3180000000000005
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -0.7,
+        -2.4,
+        3.44
+       ],
+       "size": [
+        1.4,
+        3.0,
+        1.8
+       ],
+       "uv": [
+        72,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "name": "stock",
+     "parent": "body",
+     "pivot": [
+      0,
+      0.4,
+      6.3180000000000005
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -0.9,
+        0.32,
+        2.32
+       ],
+       "size": [
+        1.8,
+        2.8,
+        5.0
+       ],
+       "uv": [
+        57,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "name": "scope",
+     "parent": "body",
+     "pivot": [
+      0,
+      4.2,
+      0
+     ],
+     "cubes": []
+    },
+    {
+     "name": "muzzle_flash",
+     "parent": "barrel",
+     "pivot": [
+      0,
+      0.6,
+      -16.038
+     ],
+     "cubes": []
+    }
+   ]
+  }
+ ]
+}

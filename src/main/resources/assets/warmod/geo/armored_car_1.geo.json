@@ -1,0 +1,251 @@
+{
+ "format_version": "1.12.0",
+ "minecraft:geometry": [
+  {
+   "description": {
+    "identifier": "geometry.warmod.armored_car_1",
+    "texture_width": 256,
+    "texture_height": 256,
+    "visible_bounds_width": 4,
+    "visible_bounds_height": 4,
+    "visible_bounds_offset": [
+     0,
+     1,
+     0
+    ]
+   },
+   "bones": [
+    {
+     "name": "root",
+     "pivot": [
+      0,
+      0,
+      0
+     ],
+     "cubes": []
+    },
+    {
+     "name": "body",
+     "parent": "root",
+     "pivot": [
+      0,
+      0,
+      0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -20.0,
+        8.0,
+        -31.0
+       ],
+       "size": [
+        40.0,
+        12.0,
+        62.0
+       ],
+       "uv": [
+        1,
+        1
+       ]
+      },
+      {
+       "origin": [
+        -17.0,
+        20.0,
+        -23.0
+       ],
+       "size": [
+        34.0,
+        8.0,
+        34.1
+       ],
+       "uv": [
+        1,
+        76
+       ]
+      },
+      {
+       "origin": [
+        -16.0,
+        22.0,
+        -8.0
+       ],
+       "size": [
+        32.0,
+        6.0,
+        10.0
+       ],
+       "uv": [
+        138,
+        76
+       ]
+      }
+     ]
+    },
+    {
+     "name": "turret",
+     "parent": "root",
+     "pivot": [
+      0,
+      28,
+      0
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -6.0,
+        28.0,
+        -2.0
+       ],
+       "size": [
+        12.0,
+        6.0,
+        12.0
+       ],
+       "uv": [
+        1,
+        119
+       ]
+      }
+     ]
+    },
+    {
+     "name": "gun",
+     "parent": "turret",
+     "pivot": [
+      0,
+      30,
+      -2
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -1.5,
+        30.0,
+        -18.0
+       ],
+       "size": [
+        3.0,
+        3.0,
+        16.0
+       ],
+       "uv": [
+        50,
+        119
+       ]
+      }
+     ]
+    },
+    {
+     "name": "wheel_0",
+     "parent": "root",
+     "pivot": [
+      -19,
+      5,
+      -13
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -22.0,
+        0.0,
+        -20.0
+       ],
+       "size": [
+        6.0,
+        10.0,
+        14.0
+       ],
+       "uv": [
+        89,
+        119
+       ]
+      }
+     ]
+    },
+    {
+     "name": "wheel_1",
+     "parent": "root",
+     "pivot": [
+      19,
+      5,
+      -13
+     ],
+     "cubes": [
+      {
+       "origin": [
+        16.0,
+        0.0,
+        -20.0
+       ],
+       "size": [
+        6.0,
+        10.0,
+        14.0
+       ],
+       "uv": [
+        130,
+        119
+       ]
+      }
+     ]
+    },
+    {
+     "name": "wheel_2",
+     "parent": "root",
+     "pivot": [
+      -19,
+      5,
+      19
+     ],
+     "cubes": [
+      {
+       "origin": [
+        -22.0,
+        0.0,
+        12.0
+       ],
+       "size": [
+        6.0,
+        10.0,
+        14.0
+       ],
+       "uv": [
+        171,
+        119
+       ]
+      }
+     ]
+    },
+    {
+     "name": "wheel_3",
+     "parent": "root",
+     "pivot": [
+      19,
+      5,
+      19
+     ],
+     "cubes": [
+      {
+       "origin": [
+        16.0,
+        0.0,
+        12.0
+       ],
+       "size": [
+        6.0,
+        10.0,
+        14.0
+       ],
+       "uv": [
+        212,
+        119
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
